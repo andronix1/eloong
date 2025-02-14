@@ -14,6 +14,12 @@ fun zero() -> Vec2D {
     return new(0.0, 0.0);
 }
 
+extern(sqrtf) fun sqrtf(x: f32) -> f32
+
+fun Vec2D.length() -> f32 {
+    return sqrtf(self.*.x * self.*.x + self.*.y * self.*.y);
+}
+
 fun Vec2D.add(other: Vec2D) -> Vec2D {
     return new(self.*.x + other.x, self.*.y + other.y);
 }
@@ -22,7 +28,12 @@ fun Vec2D.minus(other: Vec2D) -> Vec2D {
     return new(self.*.x - other.x, self.*.y - other.y);
 }
 
-# TODO: rename + WHY?
+fun Vec2D.dot(other: Vec2D) -> f32 {
+    return self.*.x * other.x + self.*.y * other.y;
+}
+
+# TODO: rename
 fun Vec2D.collinear(other: Vec2D) -> bool {
-    return self.*.x * other.x + self.*.y * other.y < 0.0;
+    var cos = self.*.dot(other) / self.*.length() / other.length();
+    return cos > 0.0;
 }

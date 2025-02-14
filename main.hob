@@ -20,6 +20,14 @@ fun main() -> i32 {
     var position = vec2d::new((width / 2) as f32, (height / 2) as f32);
     var walls = {
         wall::from_ends(
+            vec2d::new(10.0, 10.0),
+            vec2d::new(10.0, width as f32 - 10.0)
+        ),
+        wall::from_ends(
+            vec2d::new(10.0, 10.0),
+            vec2d::new(width as f32 - 10.0, 10.0)
+        ),
+        wall::from_ends(
             vec2d::new((width * 4 / 5) as f32, (height * 2 / 3) as f32),
             vec2d::new((width * 2 / 3) as f32, (height * 4 / 5) as f32)
         ),
@@ -38,16 +46,38 @@ fun main() -> i32 {
         rl::draw_circle(position, 15.0, accent_color);
         rl::draw_circle(mouse, 10.0, accent_color);
         var i = 0;
+        var cross: vec2d::Vec2D;
+        var was_cross = false;
         while i < walls.length {
-            var cross: vec2d::Vec2D;
             var w = walls[i];
             rl::draw_line(w.a, w.b, accent_color);
-            if w.cross(ray, &cross) && dir.collinear(cross.minus(position)) {
-                rl::draw_circle(cross, 5.0, accent_color);
+            var new_cross: vec2d::Vec2D;
+            if w.cross(ray, &new_cross) { # TODO: optional
+                var cross_vec = new_cross.minus(position);
+                if dir.collinear(cross_vec) {
+                    if was_cross {
+                        var last_cross_vec = cross.minus(position);
+                        if cross_vec.length() < last_cross_vec.length() {
+                            cross = new_cross;
+                        }
+                    } else {
+                        cross = new_cross;
+                    }
+                    was_cross = true;
+                }
             }
             i = i + 1;
         }
-        rl::draw_line(position, mouse, accent_color);
+        if was_cross {
+            rl::draw_circle(cross, 5.0, accent_color);
+            rl::draw_line(position, cross, accent_color);
+        } else {
+            if dir.x > 0.0 {
+                rl::draw_line(position, vec2d::new(width as f32, ray.at(width as f32)), accent_color);
+            } else {
+                rl::draw_line(position, vec2d::new(0.0, ray.at(0.0)), accent_color);
+            }
+        }
         rl::end_drawing();
     }
     return 0;

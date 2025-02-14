@@ -17,7 +17,14 @@ fun from_pos_vec2d(pos: Vec2D, dir: Vec2D) -> Line {
 }
 
 fun Line.cross_with(other: Line) -> Vec2D {
-    # TODO: vertical, horizontal...
+    if other.b <= 0.001 && other.b >= -0.001 {
+        var x = -other.c / other.a;
+        return vec2d::new(x, self.*.at(x));
+    }
+    if self.*.b <= 0.001 && self.*.b >= -0.001 {
+        var x = -self.*.c / self.*.a;
+        return vec2d::new(x, other.at(x));
+    }
     var b1 = -self.*.c / self.*.b;
     var b2 = -other.c / other.b;
     var k1 = -self.*.a / self.*.b;

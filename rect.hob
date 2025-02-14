@@ -14,6 +14,15 @@ fun new(pos: Vec2D, size: Vec2D) -> Rect {
     return result;
 }
 
+fun extend_range(a: *f32, b: *f32, bias: f32) -> void {
+    var d = b.* - a.*;
+    if d < bias {
+        var c = a.* + d / 2.0;
+        a.* = c - bias / 2.0;
+        b.* = c + bias / 2.0;
+    }
+}
+
 fun from_diag(a: Vec2D, b: Vec2D) -> Rect {
     if a.x > b.x {
         var t = b.x;
@@ -25,6 +34,8 @@ fun from_diag(a: Vec2D, b: Vec2D) -> Rect {
         b.y = a.y;
         a.y = t;
     }
+    extend_range(&a.x, &b.x, 0.001);
+    extend_range(&a.y, &b.y, 0.001);
     return new(a, b.minus(a));
 }
 
