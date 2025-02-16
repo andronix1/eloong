@@ -16,15 +16,14 @@ fun new(pos: Vec2D, size: Vec2D) -> Rect {
 
 fun from_diag(a: Vec2D, b: Vec2D) -> Rect {
     if a.x > b.x {
-        # TODO: t scope is not poping
-        var tx = b.x;
+        var t = b.x;
         b.x = a.x;
-        a.x = tx;
+        a.x = t;
     }
     if a.y > b.y {
-        var ty = b.y;
+        var t = b.y;
         b.y = a.y;
-        a.y = ty;
+        a.y = t;
     }
     return new(a, b.minus(a));
 }

@@ -22,8 +22,6 @@ fun Line.cross_with(other: Line) -> Vec2D {
     var b2 = -other.c / other.b;
     var k1 = -self.*.a / self.*.b;
     var k2 = -other.a / other.b;
-    # var y = (self.*.c * other.a / self.*.a - other.c) / 
-    #             (other.b - self.*.b * other.a / self.*.a);
     var x = (b2 - b1) / (k1 - k2);
     return vec2d::new(
         x,
