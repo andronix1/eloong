@@ -1,0 +1,28 @@
+struct Vec2D {
+    x: f32,
+    y: f32
+}
+
+fun new(x: f32, y: f32) -> Vec2D {
+    var result: Vec2D;
+    result.x = x;
+    result.y = y;
+    return result;
+}
+
+fun zero() -> Vec2D {
+    return new(0.0, 0.0);
+}
+
+fun Vec2D.add(other: Vec2D) -> Vec2D {
+    return new(self.*.x + other.x, self.*.y + other.y);
+}
+
+fun Vec2D.minus(other: Vec2D) -> Vec2D {
+    return new(self.*.x - other.x, self.*.y - other.y);
+}
+
+# TODO: rename + WHY?
+fun Vec2D.collinear(other: Vec2D) -> bool {
+    return self.*.x * other.x + self.*.y * other.y < 0.0;
+}

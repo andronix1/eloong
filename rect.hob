@@ -1,0 +1,36 @@
+import "vec2d.hob" as vec2d;
+
+use vec2d::Vec2D;
+
+struct Rect {
+    pos: Vec2D,
+    size: Vec2D
+}
+
+fun new(pos: Vec2D, size: Vec2D) -> Rect {
+    var result: Rect;
+    result.pos = pos;
+    result.size = size;
+    return result;
+}
+
+fun from_diag(a: Vec2D, b: Vec2D) -> Rect {
+    if a.x > b.x {
+        # TODO: t scope is not poping
+        var tx = b.x;
+        b.x = a.x;
+        a.x = tx;
+    }
+    if a.y > b.y {
+        var ty = b.y;
+        b.y = a.y;
+        a.y = ty;
+    }
+    return new(a, b.minus(a));
+}
+
+fun Rect.contains(point: Vec2D) -> bool {
+    return
+        self.*.pos.x <= point.x && self.*.pos.x + self.*.size.x >= point.x &&
+        self.*.pos.y <= point.y && self.*.pos.y + self.*.size.y >= point.y;
+}

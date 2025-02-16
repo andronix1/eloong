@@ -1,0 +1,66 @@
+import "vec2d.hob" as vec2d;
+import "line.hob" as line;
+import "raylib.hob" as rl;
+import "wall.hob" as wall;
+# import "../hoblang/examples/std/process.hob" as process;
+# import "../hoblang/examples/std/io.hob" as io;
+# TODO: stucks with io
+# TODO: include paths
+# lib <name>;
+
+fun main() -> i32 {
+    var bg_color = rl::rgba(0x20, 0x20, 0x20, 0xff);
+    var accent_color = rl::rgba(0xdd, 0x20, 0x20, 0xff);
+
+    var title = "hello, world!\0";
+    var width = 800;
+    var height = 800;
+    rl::init_window(width, height, title.raw);
+
+    var position = vec2d::new((width / 2) as f32, (height / 2) as f32);
+    # TODO: fix expr
+    # var _walls = {
+    #     wall::from_ends(
+    #         vec2d::new((width * 4 / 5) as f32, (height * 2 / 3) as f32),
+    #         vec2d::new((width * 2 / 3) as f32, (height * 4 / 5) as f32)
+    #     ),
+    #     wall::from_ends(
+    #         vec2d::new((width * 1 / 5) as f32, (height * 1 / 3) as f32),
+    #         vec2d::new((width * 1 / 3) as f32, (height * 1 / 5) as f32)
+    #     )
+    # };
+    var _walls: [2]wall::Wall;
+    var walls = &_walls as []wall::Wall;
+    walls[0] = wall::from_ends(
+        vec2d::new((width * 4 / 5) as f32, (height * 2 / 3) as f32),
+        vec2d::new((width * 2 / 3) as f32, (height * 4 / 5) as f32)
+    );
+    walls[1] = wall::from_ends(
+        vec2d::new((width * 1 / 5) as f32, (height * 1 / 3) as f32),
+        vec2d::new((width * 1 / 3) as f32, (height * 1 / 5) as f32)
+    );
+    while !rl::window_should_close() {
+        var mouse = rl::get_mouse_pos();
+        var dir = mouse.minus(position);
+        var ray = line::from_pos_vec2d(position, dir);
+
+        rl::begin_drawing();
+        rl::clear_bakground(bg_color);
+        rl::draw_circle(position, 15.0, accent_color);
+        rl::draw_circle(mouse, 5.0, accent_color);
+        var i = 0;
+        while i < walls.length {
+            var cross: vec2d::Vec2D;
+            # TODO: if walls[i].cross(ray, &cross) {
+            var w = walls[i];
+            rl::draw_line(w.a, w.b, accent_color);
+            if w.cross(ray, &cross) && dir.collinear(cross.minus(position)) {
+                rl::draw_circle(cross, 10.0, accent_color);
+            }
+            i = i + 1;
+        }
+        rl::draw_line(position, mouse, accent_color);
+        rl::end_drawing();
+    }
+    return 0;
+}

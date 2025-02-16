@@ -1,0 +1,28 @@
+import "vec2d.hob" as vec2d;
+import "line.hob" as line;
+import "rect.hob" as rect;
+
+use vec2d::Vec2D;
+use line::Line;
+use rect::Rect;
+
+struct Wall {
+    line: Line,
+    rect: Rect,
+    a: Vec2D,
+    b: Vec2D
+}
+
+fun from_ends(start: Vec2D, end: Vec2D) -> Wall {
+    var result: Wall;
+    result.line = line::from_pos_vec2d(start, start.minus(end));
+    result.rect = rect::from_diag(start, end);
+    result.a = start;
+    result.b = end;
+    return result;
+}
+
+fun Wall.cross(ray: Line, output: *Vec2D) -> bool {
+    output.* = self.*.line.cross_with(ray);
+    return self.*.rect.contains(output.*);
+}

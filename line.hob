@@ -1,0 +1,36 @@
+import "vec2d.hob" as vec2d;
+
+use vec2d::Vec2D;
+
+struct Line {
+    a: f32,
+    b: f32,
+    c: f32
+}
+
+fun from_pos_vec2d(pos: Vec2D, dir: Vec2D) -> Line {
+    var result: Line;
+    result.a = dir.y;
+    result.b = -dir.x;
+    result.c = dir.x * pos.y - pos.x * dir.y;
+    return result;
+}
+
+fun Line.cross_with(other: Line) -> Vec2D {
+    # TODO: vertical, horizontal...
+    var b1 = -self.*.c / self.*.b;
+    var b2 = -other.c / other.b;
+    var k1 = -self.*.a / self.*.b;
+    var k2 = -other.a / other.b;
+    # var y = (self.*.c * other.a / self.*.a - other.c) / 
+    #             (other.b - self.*.b * other.a / self.*.a);
+    var x = (b2 - b1) / (k1 - k2);
+    return vec2d::new(
+        x,
+        k1 * x + b1
+    );
+}
+
+fun Line.at(x: f32) -> f32 {
+    return -(self.*.a * x + self.*.c) / self.*.b;
+}
