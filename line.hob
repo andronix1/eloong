@@ -43,3 +43,22 @@ fun Line.at(x: f32) -> f32 {
 fun Line.normal() -> Vec2D {
     return vec2d::new(self.*.a, self.*.b);
 }
+
+fun Line.dist_from(from: Vec2D) -> f32 {
+    var n = self.*.normal();
+    var result = (from.x * self.*.a + from.y * self.*.b + self.*.c) / n.length();
+    if result < 0.0 {
+        return -result;
+    }
+    return result;
+}
+
+fun Line.offset_on(on: Vec2D) -> Line {
+    var result: Line = self.*;
+    # TODO: self.*.b ~= 0
+    # var b = -self.*.c / self.*.b;
+    # var k = -self.*.a / self.*.b;
+    # ax + by + X = 0
+    result.c = -self.*.a * on.x - self.*.b * on.y;
+    return result;
+}

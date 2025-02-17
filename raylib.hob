@@ -24,6 +24,22 @@ fun rgb(r: u8, g: u8, b: u8) -> Color {
     return rgba(r, g, b, 0xff);
 }
 
+fun u8_move_to(a: u8, b: u8, k: f32) -> u8 {
+    if k > 1.0 {
+        return b;
+    }
+    return (a as f32 + (a as f32 - b as f32) * k) as u8;
+}
+
+fun Color.move_to(other: Color, k: f32) -> Color {
+    return rgba(
+        u8_move_to(self.*.r, other.r, k),
+        u8_move_to(self.*.g, other.g, k),
+        u8_move_to(self.*.b, other.b, k),
+        u8_move_to(self.*.a, other.a, k)
+    );
+}
+
 extern(ClearBackground) fun clear_bakground(color: Color) -> void
 extern(GetFrameTime) fun get_frame_time() -> f32
 

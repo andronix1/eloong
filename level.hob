@@ -16,25 +16,33 @@ fun new(walls: []Wall) -> Level {
     return result;
 }
 
-fun Level.ray_cast(what: Ray, output: *Vec2D) -> bool {
+struct RayCastInfo {
+    success: bool,
+    pos: Vec2D
+}
+
+fun Level.ray_cast(what: Ray) -> RayCastInfo {
+    var result: RayCastInfo;
     var i = 0;
-    var was_cross = false;
+    result.success = false;
     while i < self.*.walls.length {
         var w = self.*.walls[i];
         var new_cross: Vec2D;
         if w.cross(what, &new_cross) { # TODO: optional
             var cross_vec = new_cross.minus(what.pos);
-            if was_cross {
-                var last_cross_vec = output.*.minus(what.pos);
+            if result.success {
+                var last_cross_vec = result.pos.minus(what.pos);
                 if cross_vec.length() < last_cross_vec.length() {
-                    output.* = new_cross;
+                    result.pos = new_cross;
                 }
             } else {
-                output.* = new_cross;
+                result.pos = new_cross;
             }
-            was_cross = true;
+            result.success = true;
+            # TODO: inner path
+            var wallp = w.line.offset_on(what.pos);
         }
         i = i + 1;
     }
-    return was_cross;
+    return result;
 }

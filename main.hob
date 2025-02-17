@@ -15,11 +15,13 @@ use vec2d::Vec2D;
 fun main() -> i32 {
     var bg_color = rl::rgba(0x20, 0x20, 0x20, 0xff);
     var accent_color = rl::rgba(0xdd, 0x20, 0x20, 0xff);
-    var gray_color = rl::rgba(0x40, 0x40, 0x40, 0xff);
+    var gray_color = rl::rgba(0x10, 0x10, 0x10, 0xff);
+    var light_gray_color = rl::rgba(0x80, 0x80, 0x80, 0xff);
     var cp_distance = 15.0;
     var cp_size = 30.0;
     var rays_count = 80;
     var player_size = cp_distance;
+    var max_dist = 1000.0;
 
     var title = "hello, world!\0";
     var width = 800;
@@ -71,10 +73,17 @@ fun main() -> i32 {
             var i = 0;
             while i < rays_count {
                 var cur_ray = ray::new(position, cp_start.add(cps.mul(i as f32)));
-                var intersect: Vec2D;
-                if l.ray_cast(cur_ray, &intersect) {
-                    # rl::draw_circle(intersect, 5.0, accent_color);
-                    rl::draw_line(position, intersect, gray_color);
+                var intersection = l.ray_cast(cur_ray);
+                if intersection.success {
+                    var cp_line2 = line::from_pos_vec2d(position, cp.mul(1.0)); # TODO: inner path in consts
+                    var distance = cp_line2.dist_from(intersection.pos);
+                    # rl::draw_circle(intersection, 5.0, accent_color);
+                    # rl::draw_line(
+                    #     vec2d::new(0.0, cp_line2.at(0.0)),
+                    #     vec2d::new(800.0, cp_line2.at(800.0)),
+                    #     accent_color
+                    # );
+                    rl::draw_line(position, intersection.pos, light_gray_color.move_to(gray_color, distance / max_dist));
                 } else {
                     if cur_ray.dir.x > 0.0 {
                         rl::draw_line(position, vec2d::new(width as f32, cur_ray.line.at(width as f32)), gray_color);
