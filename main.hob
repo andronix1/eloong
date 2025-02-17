@@ -15,9 +15,10 @@ use vec2d::Vec2D;
 fun main() -> i32 {
     var bg_color = rl::rgba(0x20, 0x20, 0x20, 0xff);
     var accent_color = rl::rgba(0xdd, 0x20, 0x20, 0xff);
+    var gray_color = rl::rgba(0x40, 0x40, 0x40, 0xff);
     var cp_distance = 15.0;
     var cp_size = 30.0;
-    var rays_count = 60;
+    var rays_count = 80;
     var player_size = cp_distance;
 
     var title = "hello, world!\0";
@@ -54,15 +55,7 @@ fun main() -> i32 {
 
         rl::begin_drawing();
         rl::clear_bakground(bg_color);
-        rl::draw_circle(position, player_size, accent_color);
-        rl::draw_circle(mouse, 10.0, accent_color);
-        
-        var i = 0;
-        while i < l.walls.length {
-            var w = l.walls[i];
-            rl::draw_line(w.a, w.b, accent_color);
-            i = i + 1;
-        }
+        # rl::draw_circle(mouse, 10.0, accent_color);
 
         var mouse_delta = mouse.minus(position); # TODO: inner path in consts
         if mouse_delta.length() > player_size {
@@ -75,29 +68,38 @@ fun main() -> i32 {
             var cps = normal.mul(-cp.length() / rays_count as f32);
             var cp_start = cp_dir_norm.mul(cp_distance);
             cp_start = cp_start.add(cp.mul(0.5));
-            i = 0;
+            var i = 0;
             while i < rays_count {
                 var cur_ray = ray::new(position, cp_start.add(cps.mul(i as f32)));
                 var intersect: Vec2D;
                 if l.ray_cast(cur_ray, &intersect) {
-                    rl::draw_circle(intersect, 5.0, accent_color);
-                    rl::draw_line(position, intersect, accent_color);
+                    # rl::draw_circle(intersect, 5.0, accent_color);
+                    rl::draw_line(position, intersect, gray_color);
                 } else {
                     if cur_ray.dir.x > 0.0 {
-                        rl::draw_line(position, vec2d::new(width as f32, cur_ray.line.at(width as f32)), accent_color);
+                        rl::draw_line(position, vec2d::new(width as f32, cur_ray.line.at(width as f32)), gray_color);
                     } else if cur_ray.dir.x < 0.001 && cur_ray.dir.x > -0.001 {
                         if cur_ray.dir.y > 0.0 {
-                            rl::draw_line(position, vec2d::new(position.x, height as f32), accent_color);
+                            rl::draw_line(position, vec2d::new(position.x, height as f32), gray_color);
                         } else {
-                            rl::draw_line(position, vec2d::new(position.x, 0.0), accent_color);
+                            rl::draw_line(position, vec2d::new(position.x, 0.0), gray_color);
                         }
                     } else {
-                        rl::draw_line(position, vec2d::new(0.0, cur_ray.line.at(0.0)), accent_color);
+                        rl::draw_line(position, vec2d::new(0.0, cur_ray.line.at(0.0)), gray_color);
                     }
                 }
                 i = i + 1;
             }
         }
+        
+        var i = 0;
+        while i < l.walls.length {
+            var w = l.walls[i];
+            rl::draw_line(w.a, w.b, accent_color);
+            i = i + 1;
+        }
+
+        rl::draw_circle(position, player_size, accent_color);
 
         rl::end_drawing();
     }
