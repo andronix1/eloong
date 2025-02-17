@@ -1,0 +1,40 @@
+import "wall.hob" as wall;
+import "vec2d.hob" as vec2d;
+import "ray.hob" as ray;
+
+use ray::Ray;
+use vec2d::Vec2D;
+use wall::Wall;
+
+struct Level {
+    walls: []Wall
+}
+
+fun new(walls: []Wall) -> Level {
+    var result: Level;
+    result.walls = walls;
+    return result;
+}
+
+fun Level.ray_cast(what: Ray, output: *Vec2D) -> bool {
+    var i = 0;
+    var was_cross = false;
+    while i < self.*.walls.length {
+        var w = self.*.walls[i];
+        var new_cross: Vec2D;
+        if w.cross(what, &new_cross) { # TODO: optional
+            var cross_vec = new_cross.minus(what.pos);
+            if was_cross {
+                var last_cross_vec = output.*.minus(what.pos);
+                if cross_vec.length() < last_cross_vec.length() {
+                    output.* = new_cross;
+                }
+            } else {
+                output.* = new_cross;
+            }
+            was_cross = true;
+        }
+        i = i + 1;
+    }
+    return was_cross;
+}

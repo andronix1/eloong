@@ -46,6 +46,10 @@ fun get_mouse_pos() -> Vec2D {
     return vec2d::new(get_mouse_x() as f32, get_mouse_y() as f32);
 }
 
+const MOUSE_BUTTON_LEFT: i32 = 0;
+
+extern(IsMouseButtonPressed) fun is_mouse_button_pressed(button: i32) -> bool
+
 # TODO: debug it
 # extern(GetMousePosition) fun get_mouse_pos() -> Vec2D
 # EOF without new line

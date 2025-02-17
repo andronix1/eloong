@@ -1,0 +1,19 @@
+import "vec2d.hob" as vec2d;
+import "line.hob" as line;
+
+use vec2d::Vec2D;
+use line::Line;
+
+struct Ray {
+    pos: Vec2D,
+    dir: Vec2D,
+    line: Line
+}
+
+fun new(a: Vec2D, b: Vec2D) -> Ray {
+    var result: Ray;
+    result.pos = a;
+    result.dir = b.minus(a);
+    result.line = line::from_pos_vec2d(result.pos, result.dir);
+    return result;
+}
