@@ -2,6 +2,7 @@ import "vec2d.hob" as vec2d;
 import "ray.hob" as ray;
 import "raylib.hob" as rl;
 import "wall.hob" as wall;
+import "line.hob" as line;
 import "level.hob" as level;
 # import "../hoblang/examples/std/process.hob" as process;
 # import "../hoblang/examples/std/io.hob" as io;
@@ -14,7 +15,10 @@ use vec2d::Vec2D;
 fun main() -> i32 {
     var bg_color = rl::rgba(0x20, 0x20, 0x20, 0xff);
     var accent_color = rl::rgba(0xdd, 0x20, 0x20, 0xff);
-    var player_size = 15.0;
+    var cp_distance = 15.0;
+    var cp_size = 30.0;
+    var rays_count = 60;
+    var player_size = cp_distance;
 
     var title = "hello, world!\0";
     var width = 800;
@@ -60,19 +64,38 @@ fun main() -> i32 {
             i = i + 1;
         }
 
-        var mouse_pos = mouse.minus(position);
-        if mouse_pos.length() > player_size {
-            var mouse_ray = ray::new(position, mouse);
-            var intersect: Vec2D;
-            if l.ray_cast(mouse_ray, &intersect) {
-                rl::draw_circle(intersect, 5.0, accent_color);
-                rl::draw_line(position, intersect, accent_color);
-            } else {
-                if mouse_ray.dir.x > 0.0 {
-                    rl::draw_line(position, vec2d::new(width as f32, mouse_ray.line.at(width as f32)), accent_color);
+        var mouse_delta = mouse.minus(position); # TODO: inner path in consts
+        if mouse_delta.length() > player_size {
+            var cp_dir = mouse_delta.mul(1.0 / mouse_delta.length());
+            var cp_dir_norm = cp_dir.norm();
+            var cp_line = line::from_pos_vec2d(position, cp_dir); # TODO: inner path in consts
+            var cp_normal = cp_line.normal();
+            var normal = cp_normal.norm();
+            var cp = normal.mul(cp_size as f32);
+            var cps = normal.mul(-cp.length() / rays_count as f32);
+            var cp_start = cp_dir_norm.mul(cp_distance);
+            cp_start = cp_start.add(cp.mul(0.5));
+            i = 0;
+            while i < rays_count {
+                var cur_ray = ray::new(position, cp_start.add(cps.mul(i as f32)));
+                var intersect: Vec2D;
+                if l.ray_cast(cur_ray, &intersect) {
+                    rl::draw_circle(intersect, 5.0, accent_color);
+                    rl::draw_line(position, intersect, accent_color);
                 } else {
-                    rl::draw_line(position, vec2d::new(0.0, mouse_ray.line.at(0.0)), accent_color);
+                    if cur_ray.dir.x > 0.0 {
+                        rl::draw_line(position, vec2d::new(width as f32, cur_ray.line.at(width as f32)), accent_color);
+                    } else if cur_ray.dir.x < 0.001 && cur_ray.dir.x > -0.001 {
+                        if cur_ray.dir.y > 0.0 {
+                            rl::draw_line(position, vec2d::new(position.x, height as f32), accent_color);
+                        } else {
+                            rl::draw_line(position, vec2d::new(position.x, 0.0), accent_color);
+                        }
+                    } else {
+                        rl::draw_line(position, vec2d::new(0.0, cur_ray.line.at(0.0)), accent_color);
+                    }
                 }
+                i = i + 1;
             }
         }
 

@@ -28,6 +28,14 @@ fun Vec2D.minus(other: Vec2D) -> Vec2D {
     return new(self.*.x - other.x, self.*.y - other.y);
 }
 
+fun Vec2D.mul(k: f32) -> Vec2D {
+    return new(self.*.x * k, self.*.y * k);
+}
+
+fun Vec2D.norm() -> Vec2D {
+    return self.*.mul(1.0 / self.*.length());
+}
+
 fun Vec2D.dot(other: Vec2D) -> f32 {
     return self.*.x * other.x + self.*.y * other.y;
 }

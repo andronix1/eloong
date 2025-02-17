@@ -10,10 +10,10 @@ struct Ray {
     line: Line
 }
 
-fun new(a: Vec2D, b: Vec2D) -> Ray {
+fun new(pos: Vec2D, dir: Vec2D) -> Ray {
     var result: Ray;
-    result.pos = a;
-    result.dir = b.minus(a);
+    result.pos = pos;
+    result.dir = dir;
     result.line = line::from_pos_vec2d(result.pos, result.dir);
     return result;
 }

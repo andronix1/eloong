@@ -39,3 +39,7 @@ fun Line.cross_with(other: Line) -> Vec2D {
 fun Line.at(x: f32) -> f32 {
     return -(self.*.a * x + self.*.c) / self.*.b;
 }
+
+fun Line.normal() -> Vec2D {
+    return vec2d::new(self.*.a, self.*.b);
+}
