@@ -73,8 +73,9 @@ fun main() -> i32 {
             var i = 0;
             while i < rays_count {
                 var cur_ray = ray::new(position, cp_start.add(cps.mul(i as f32)));
-                var intersection = l.ray_cast(cur_ray);
-                if intersection.success {
+                var intersection_o = l.ray_cast(cur_ray);
+                if !intersection_o.null {
+                    var intersection = intersection_o as level::RayCastInfo;
                     var cp_line2 = line::from_pos_vec2d(position, cp.mul(1.0)); # TODO: inner path in consts
                     var distance = cp_line2.dist_from(intersection.pos);
                     # rl::draw_circle(intersection, 5.0, accent_color);
