@@ -24,8 +24,8 @@ fun from_ends(start: Vec2D, end: Vec2D) -> Wall {
     return result;
 }
 
-fun Wall.cross(with: Ray, output: *Vec2D) -> bool {
-    output.* = self.*.line.cross_with(with.line);
+fun(Wall) cross(with: Ray, output: *Vec2D) -> bool {
+    output.* = self.line.cross_with(with.line);
     var cross_vec = output.*.minus(with.pos); # ext for non-reference
-    return self.*.rect.contains(output.*) && with.dir.collinear(cross_vec);
+    return self.rect.contains(output.*) && with.dir.collinear(cross_vec);
 }

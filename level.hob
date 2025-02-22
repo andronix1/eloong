@@ -1,6 +1,7 @@
 import "wall.hob" as wall;
 import "vec2d.hob" as vec2d;
 import "ray.hob" as ray;
+import "line.hob" as line;
 
 use ray::Ray;
 use vec2d::Vec2D;
@@ -20,12 +21,12 @@ struct RayCastInfo {
     pos: Vec2D
 }
 
-fun Level.ray_cast(what: Ray) -> ?RayCastInfo {
+fun(Level) ray_cast(what: Ray) -> ?RayCastInfo {
     var result: RayCastInfo;
     var i = 0;
     var success = false;
-    while i < self.*.walls.length {
-        var w = self.*.walls[i];
+    while i < self.walls.length {
+        var w = self.walls[i];
         var new_cross: Vec2D;
         if w.cross(what, &new_cross) { # TODO: optional
             var cross_vec = new_cross.minus(what.pos);

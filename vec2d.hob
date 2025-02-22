@@ -16,32 +16,32 @@ fun zero() -> Vec2D {
 
 extern(sqrtf) fun sqrtf(x: f32) -> f32
 
-fun Vec2D.length() -> f32 {
-    return sqrtf(self.*.x * self.*.x + self.*.y * self.*.y);
+fun(Vec2D) length() -> f32 {
+    return sqrtf(self.x * self.x + self.y * self.y);
 }
 
-fun Vec2D.add(other: Vec2D) -> Vec2D {
-    return new(self.*.x + other.x, self.*.y + other.y);
+fun(Vec2D) add(other: Vec2D) -> Vec2D {
+    return new(self.x + other.x, self.y + other.y);
 }
 
-fun Vec2D.minus(other: Vec2D) -> Vec2D {
-    return new(self.*.x - other.x, self.*.y - other.y);
+fun(Vec2D) minus(other: Vec2D) -> Vec2D {
+    return new(self.x - other.x, self.y - other.y);
 }
 
-fun Vec2D.mul(k: f32) -> Vec2D {
-    return new(self.*.x * k, self.*.y * k);
+fun(Vec2D) mul(k: f32) -> Vec2D {
+    return new(self.x * k, self.y * k);
 }
 
-fun Vec2D.norm() -> Vec2D {
-    return self.*.mul(1.0 / self.*.length());
+fun(Vec2D) norm() -> Vec2D {
+    return self.mul(1.0 / self.length());
 }
 
-fun Vec2D.dot(other: Vec2D) -> f32 {
-    return self.*.x * other.x + self.*.y * other.y;
+fun(Vec2D) dot(other: Vec2D) -> f32 {
+    return self.x * other.x + self.y * other.y;
 }
 
 # TODO: rename
-fun Vec2D.collinear(other: Vec2D) -> bool {
-    var cos = self.*.dot(other) / self.*.length() / other.length();
+fun(Vec2D) collinear(other: Vec2D) -> bool {
+    var cos = self.dot(other) / self.length() / other.length();
     return cos > 0.0;
 }

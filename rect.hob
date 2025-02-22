@@ -39,8 +39,8 @@ fun from_diag(a: Vec2D, b: Vec2D) -> Rect {
     return new(a, b.minus(a));
 }
 
-fun Rect.contains(point: Vec2D) -> bool {
+fun(Rect) contains(point: Vec2D) -> bool {
     return
-        self.*.pos.x <= point.x && self.*.pos.x + self.*.size.x >= point.x &&
-        self.*.pos.y <= point.y && self.*.pos.y + self.*.size.y >= point.y;
+        self.pos.x <= point.x && self.pos.x + self.size.x >= point.x &&
+        self.pos.y <= point.y && self.pos.y + self.size.y >= point.y;
 }

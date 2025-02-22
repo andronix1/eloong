@@ -16,18 +16,18 @@ fun from_pos_vec2d(pos: Vec2D, dir: Vec2D) -> Line {
     return result;
 }
 
-fun Line.cross_with(other: Line) -> Vec2D {
+fun(Line) cross_with(other: Line) -> Vec2D {
     if other.b <= 0.001 && other.b >= -0.001 {
         var x = -other.c / other.a;
-        return vec2d::new(x, self.*.at(x));
+        return vec2d::new(x, self.at(x));
     }
-    if self.*.b <= 0.001 && self.*.b >= -0.001 {
-        var x = -self.*.c / self.*.a;
+    if self.b <= 0.001 && self.b >= -0.001 {
+        var x = -self.c / self.a;
         return vec2d::new(x, other.at(x));
     }
-    var b1 = -self.*.c / self.*.b;
+    var b1 = -self.c / self.b;
     var b2 = -other.c / other.b;
-    var k1 = -self.*.a / self.*.b;
+    var k1 = -self.a / self.b;
     var k2 = -other.a / other.b;
     var x = (b2 - b1) / (k1 - k2);
     return vec2d::new(
@@ -36,29 +36,29 @@ fun Line.cross_with(other: Line) -> Vec2D {
     );
 }
 
-fun Line.at(x: f32) -> f32 {
-    return -(self.*.a * x + self.*.c) / self.*.b;
+fun(Line) at(x: f32) -> f32 {
+    return -(self.a * x + self.c) / self.b;
 }
 
-fun Line.normal() -> Vec2D {
-    return vec2d::new(self.*.a, self.*.b);
+fun(Line) normal() -> Vec2D {
+    return vec2d::new(self.a, self.b);
 }
 
-fun Line.dist_from(from: Vec2D) -> f32 {
-    var n = self.*.normal();
-    var result = (from.x * self.*.a + from.y * self.*.b + self.*.c) / n.length();
+fun(Line) dist_from(from: Vec2D) -> f32 {
+    var n = self.normal();
+    var result = (from.x * self.a + from.y * self.b + self.c) / n.length();
     if result < 0.0 {
         return -result;
     }
     return result;
 }
 
-fun Line.offset_on(on: Vec2D) -> Line {
-    var result: Line = self.*;
-    # TODO: self.*.b ~= 0
-    # var b = -self.*.c / self.*.b;
-    # var k = -self.*.a / self.*.b;
+fun(Line) offset_on(on: Vec2D) -> Line {
+    var result: Line = self;
+    # TODO: self.b ~= 0
+    # var b = -self.c / self.b;
+    # var k = -self.a / self.b;
     # ax + by + X = 0
-    result.c = -self.*.a * on.x - self.*.b * on.y;
+    result.c = -self.a * on.x - self.b * on.y;
     return result;
 }
