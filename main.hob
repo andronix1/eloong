@@ -4,11 +4,6 @@ import "raylib.hob" as rl;
 import "wall.hob" as wall;
 import "line.hob" as line;
 import "level.hob" as level;
-# import "../hoblang/examples/std/process.hob" as process;
-# import "../hoblang/examples/std/io.hob" as io;
-# TODO: stucks with io
-# TODO: include paths
-# lib <name>;
 
 use vec2d::Vec2D;
 
