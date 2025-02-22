@@ -27,8 +27,9 @@ fun(Level) ray_cast(what: Ray) -> ?RayCastInfo {
     var success = false;
     while i < self.walls.length {
         var w = self.walls[i];
-        var new_cross: Vec2D;
-        if w.cross(what, &new_cross) { # TODO: optional
+        var cross = w.cross(what); 
+        if !cross.null {
+            var new_cross = cross as Vec2D;
             var cross_vec = new_cross.minus(what.pos);
             if success {
                 var last_cross_vec = result.pos.minus(what.pos);
@@ -39,13 +40,11 @@ fun(Level) ray_cast(what: Ray) -> ?RayCastInfo {
                 result.pos = new_cross;
             }
             success = true;
-            # TODO: inner path
-            var wallp = w.line.offset_on(what.pos);
         }
         i = i + 1;
     }
     if !success {
         return null;
     }
-    return result as ?RayCastInfo;
+    return result as _;
 }
