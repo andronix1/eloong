@@ -1,3 +1,10 @@
+import "math.hob" as math;
+
+use math::sqrtf;
+use math::sinf;
+use math::cosf;
+use math::acosf;
+
 struct Vec2D {
     x: f32,
     y: f32
@@ -13,8 +20,6 @@ fun new(x: f32, y: f32) -> Vec2D {
 fun zero() -> Vec2D {
     return new(0.0, 0.0);
 }
-
-extern(sqrtf) fun sqrtf(x: f32) -> f32
 
 fun(Vec2D) length() -> f32 {
     return sqrtf(self.x * self.x + self.y * self.y);
@@ -34,6 +39,22 @@ fun(Vec2D) mul(k: f32) -> Vec2D {
 
 fun(Vec2D) norm() -> Vec2D {
     return self.mul(1.0 / self.length());
+}
+
+fun(Vec2D) rotate(angle: f32) -> Vec2D {
+    return from_angle(self.angle() + angle, self.length());
+}
+
+fun from_angle(angle: f32, length: f32) -> Vec2D { 
+    return new(cosf(angle), sinf(angle)).mul(length);
+}
+
+fun(Vec2D) angle() -> f32 { 
+    var angle = acosf(self.x / self.length());
+    if self.y < 0.0 {
+        angle = 2.0 * 3.1415 - angle;
+    }
+    return angle;
 }
 
 fun(Vec2D) dot(other: Vec2D) -> f32 {

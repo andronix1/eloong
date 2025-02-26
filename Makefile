@@ -1,14 +1,7 @@
-.PHONY: build link
+.PHONY: build
 
-# too bad but it is example)
-HOBLANG=../hoblang/.build/hoblang
-LINKER=gcc
-
-link: build
-	$(LINKER) .build/eloong.o -L../libs -lraylib -lc -lm -ldl -o .build/eloong
-
-build: .build
-	$(HOBLANG) compile main.hob .build/eloong.o
+run: .build
+	hoblang build-exe main.hob .build/eloong --linker /usr/bin/gcc --link m --link raylib --run
 
 .build:
 	mkdir .build

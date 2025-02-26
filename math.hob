@@ -1,0 +1,4 @@
+extern(sqrtf) fun sqrtf(x: f32) -> f32
+extern(acosf) fun acosf(x: f32) -> f32
+extern(sinf) fun sinf(x: f32) -> f32
+extern(cosf) fun cosf(x: f32) -> f32

@@ -4,8 +4,10 @@ import "raylib.hob" as rl;
 import "wall.hob" as wall;
 import "line.hob" as line;
 import "level.hob" as level;
+import "math.hob" as math;
 
 use vec2d::Vec2D;
+use math::cosf as cos;
 
 fun main() -> i32 {
     var bg_color = rl::rgba(0x20, 0x20, 0x20, 0xff);
@@ -13,8 +15,8 @@ fun main() -> i32 {
     var gray_color = rl::rgba(0x10, 0x10, 0x10, 0xff);
     var light_gray_color = rl::rgba(0x80, 0x80, 0x80, 0xff);
     var cp_distance = 15.0;
-    var cp_size = 30.0;
-    var rays_count = 80;
+    var fov = 3.1415 / 3.0;
+    var rays_count = 30;
     var player_size = cp_distance;
     var max_dist = 1000.0;
 
@@ -56,15 +58,12 @@ fun main() -> i32 {
         var mouse_delta = mouse.minus(position);
         if mouse_delta.length() > player_size {
             var cp_dir = mouse_delta.mul(1.0 / mouse_delta.length()).norm();
-            var normal = line::from_pos_vec2d(position, cp_dir).normal().norm();
-            var cp = normal.mul(cp_size as f32);
-            var cps = normal.mul(-cp.length() / rays_count as f32);
-            var cp_start = cp_dir.mul(cp_distance).add(cp.mul(0.5));
             var i = 0;
             while i < rays_count {
-                var cur_ray = ray::new(position, cp_start.add(cps.mul(i as f32)));
+                var angle = (i - rays_count / 2) as f32 / rays_count as f32 * fov;
+                var cur_ray = ray::new(position, cp_dir.rotate(angle));
                 if l.ray_cast(cur_ray) unwrap intersection {
-                    var distance = line::from_pos_vec2d(position, cp.mul(1.0)).dist_from(intersection.pos);
+                    var distance = position.minus(intersection.pos).length() * cosf(angle);
                     var lh = height as f32 * (1.0 - distance / max_dist);
                     var lx = (width * i / rays_count) as f32;
                     rl::draw_line(
